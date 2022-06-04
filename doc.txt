@@ -1,0 +1,78 @@
+Create an image 
+docker build -t node-app-image .
+
+Create a conatiner passed .env file with all configurations
+docker run -v /Users/kasugaiyuuta/Documents/Dcoker_ContainerTest:/app -v /app/node_modules --env-file ./.env -p 4000:4000 -d --name node-app node-app-image
+
+Developer Notes:
+ - Figure how to use .dockerignore file to remove unnecessary files from container 
+
+Task
+ - Create compose file to create two containers
+    1, node
+    2, mysql
+- Set up the hostname, username, and password of the mysql database for the inside of container 
+    - After docker-compose up, the node container initially has an access to the DB in mysql container 
+- Create test database inside of mysql container 
+    1, table name > number
+    2, row > id, numbers, created_at
+- Connect node container with the mysql container 
+- Run the compose file to test if the brwoser can be opned and worked with database
+
+Next Rask
+- modify the docker-compose file
+- write a complete recipe to create database and make a connection with it through running only docker-compose file 
+
+
+my test  database table query 
+CREATE TABLE IF NOT EXISTS numbers (
+	id INT AUTO_INCREMENT PRIMARY KEY, 
+    number INT NOT NULL, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+
+// Instruction from Saad 
+Create a container 
+docker container run -td --name Node2 node:18-bullseye-slim
+
+Access the container 
+docker exec -it Node3 bash
+
+Copy our project to home directory 
+docker cp /Users/kasugaiyuuta/Documents/Test_DockerApps/demofile1.html Node2:/home/yuta/demo
+
+Install Packages 
+- vim ( you can choose nano)
+- git 
+- curl 
+- apt-get install iputils-ping
+- apt-get install net-tools -y
+- npm install mysql <-- to allow you to connect to the DB remotely 
+
+
+Create anotehr container for mysql
+docker run --name Mysql -e MYSQL_ROOT_PASSWORD=abc@123 -d mysql:latest
+
+Access mysql-shell
+kasugaiyuuta$ docker exec -it Mysql mysql -p
+
+
+Troubleshooting: 
+
+Error: ER_NOT_SUPPORTED_AUTH_MODE: Client does not support authentication protocol requested by server; consider upgrading MySQL client
+
+root/mysql user needs to have mysql_native_password to be able to conenct with Node.js as it doesn't support any other autehntication at this time 
+
+Check user authentication method: 
+SELECT user,host,plugin FROM mysql.user;
+
+Modify the root permission 
+ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'abc@123';
+
+Reload the new configuration
+flush privileges;
+
+https://stackoverflow.com/questions/50093144/mysql-8-0-client-does-not-support-authentication-protocol-requested-by-server
+
+
+
