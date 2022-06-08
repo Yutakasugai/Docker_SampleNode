@@ -31,6 +31,15 @@ CREATE TABLE IF NOT EXISTS numbers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 
+// create network connection in yml file 
+networks:
+  default:
+    driver: bridge
+    ipam: 
+      config:
+        - subnet: 172.18.0.0/16
+          gateway: 172.18.0.1
+
 // Instruction from Saad 
 Create a container 
 docker container run -td --name Node2 node:18-bullseye-slim
